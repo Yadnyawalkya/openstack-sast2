@@ -1,17 +1,11 @@
 import sys
 import os
-from unittest.mock import patch, MagicMock
 import pytest
-import subprocess
+from unittest.mock import patch
+from reports.report_generator import generate_report
 
 # Adjusting the path to find 'main.py' in the root directory
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
-import main  # This imports 'main.py' correctly
-
-from reports.report_generator import (
-    generate_report,
-)  # Replace with your actual function and module
 
 
 # Test case 1: Test valid report generation with mock data

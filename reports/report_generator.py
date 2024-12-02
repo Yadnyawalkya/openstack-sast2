@@ -3,7 +3,6 @@ import os
 import subprocess
 import tarfile
 import re
-import threading
 import shutil
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
@@ -293,7 +292,7 @@ def generate_tables_and_write_to_file(d, parent_dir, stats_file_name):
             total_top25_cwe,
             total_other_important,
         ]
-    )
+    ) # noqa
 
     total_table = PrettyTable()
     total_table.field_names = ["Product Version", "Total Components", "Total Results"]

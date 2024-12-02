@@ -1,13 +1,12 @@
 import sys
 import os
-from unittest.mock import patch, MagicMock
+import main
+from unittest.mock import patch
 import pytest
 import subprocess
 
 # Adjusting the path to find 'main.py' in the root directory
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
-import main  # This imports 'main.py' correctly
 
 
 @pytest.fixture
