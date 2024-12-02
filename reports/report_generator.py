@@ -284,7 +284,7 @@ def generate_tables_and_write_to_file(d, parent_dir, stats_file_name):
     )
     table.add_row(
         [
-            f"\033[1mTotal\033[0m",
+            "\033[1mTotal\033[0m",
             total_core_files,
             total_dep_files,
             total_core_errors,
