@@ -6,33 +6,47 @@ from concurrent.futures import ProcessPoolExecutor
 import logging
 
 # Setup logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 excluded_packages = []
 problematic_scans = []
 
+
 def read_config():
-    with open('config.json') as config_file:
+    with open("config.json") as config_file:
         return json.load(config_file)
 
+
 def scan_packages(package_name):
-    scan_id = "openstack" if (".el8ost" not in package_name and ".el9ost" not in package_name) else "openstack-podified"
+    scan_id = (
+        "openstack"
+        if (".el8ost" not in package_name and ".el9ost" not in package_name)
+        else "openstack-podified"
+    )
     scan_command = [
-        'osh-cli', 'mock-build', '--priority=0', '--nowait',
-        '--comment={}'.format(scan_id),
+        "osh-cli",
+        "mock-build",
+        "--priority=0",
+        "--nowait",
+        "--comment={}".format(scan_id),
         "--config=auto",
-        "--nvr={}".format(package_name)
+        "--nvr={}".format(package_name),
     ]
     try:
-        result = subprocess.run(scan_command, capture_output=True, text=True, check=True)
+        result = subprocess.run(
+            scan_command, capture_output=True, text=True, check=True
+        )
         return None, result.stdout
     except subprocess.CalledProcessError as e:
         return package_name, e.output
 
+
 def main():
     config_data = read_config()
-    create_manifest(config_data['related_comments'])
-    all_tags = config_data['brew_tags']
+    create_manifest(config_data["related_comments"])
+    all_tags = config_data["brew_tags"]
     manifest_tasklists = get_manifest()
     manifest_lookup_cache = {}
 
@@ -43,7 +57,9 @@ def main():
                 futures = []
                 for package_name in package_names:
                     if manifest_lookup_cache.get(package_name) is None:
-                        manifest_lookup_cache[package_name] = lookup_in_manifest(package_name, manifest_tasklists)
+                        manifest_lookup_cache[package_name] = lookup_in_manifest(
+                            package_name, manifest_tasklists
+                        )
                     if not manifest_lookup_cache[package_name]:
                         futures.append(executor.submit(scan_packages, package_name))
                         excluded_packages.append(package_name)
@@ -62,6 +78,7 @@ def main():
         logging.warning("Problematic packages:")
         for package_name in problematic_scans:
             logging.warning(package_name)
+
 
 if __name__ == "__main__":
     main()
