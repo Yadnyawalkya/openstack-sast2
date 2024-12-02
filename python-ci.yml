@@ -1,0 +1,33 @@
+name: Python CI
+
+on:
+  push:
+    branches:
+      - '**'  # Trigger CI on push to any branch
+  pull_request:
+    branches:
+      - main  # Trigger CI on pull requests targeting the main branch
+  schedule:
+    - cron: '0 0 * * *'  # Run the CI every day at midnight UTC (adjust the time if needed)
+
+jobs:
+  test:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu image for CI
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3  # Checks out the repository code
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'  # Use Python 3.12 (adjust as needed)
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt  # Install dependencies from requirements.txt
+
+      - name: Run tests
+        run: |
+          pytest tests/test_main.py --maxfail=1 --disable-warnings -q  # Run only test_main.py
